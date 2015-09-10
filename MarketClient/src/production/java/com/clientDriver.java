@@ -13,7 +13,7 @@ import production.marshalling.PostMarshaller;
 public class clientDriver {
 	public static void main(String[] args) throws JAXBException {
 		
-		String targetURL = "http://localhost:8080/MarketService";
+		String targetURL = "http://localhost:8080/MarketServiceGradle";
 		String resourceUrl = "/offer";
 		String preExistingPost = "/CurrentOffer";
 		
