@@ -8,14 +8,18 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 
+import javax.ejb.Startup;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.jboss.logging.Logger;
 import production.entity.*;
 import production.enums.PostingType;
 import production.enums.PostOutcome;
 import production.entity.SpreadStatusReport;
+import production.entity.SpreadStatusReportWrapper;
+
 
 
 /**
@@ -24,6 +28,7 @@ import production.entity.SpreadStatusReport;
  * 
  * @author e588318
  */
+@Startup
 
 @ApplicationScoped
 public class MatchingEngine {
@@ -35,6 +40,7 @@ public class MatchingEngine {
 
 	public MatchingEngine() {
 		// DataStructure initialization
+		System.out.println("Matching Engine Created!");
 		this.asks = new HashMap<String, PriorityQueue<Post>>();
 		this.bids = new HashMap<String, PriorityQueue<Post>>();
 	}
@@ -68,6 +74,8 @@ public class MatchingEngine {
 				return reports;
 			}
 		}
+		
+		
 	}
 	
 	
@@ -299,7 +307,7 @@ public class MatchingEngine {
 	 * in the order books
 	 * @return
 	 */
-	public ArrayList<SpreadStatusReport> getSpreadStatusReports()
+	public SpreadStatusReportWrapper getSpreadStatusReports()
 	{	//Workflow:
 		//	1.) copy all symbol strings from the order books to a union 
 		//		object in a thread-safe way
@@ -321,7 +329,10 @@ public class MatchingEngine {
 		{	//get individual reports for all symbols
 			reports.add(this.generateReportForSymbol(symbol));
 		}
-		return reports;
+		
+		SpreadStatusReportWrapper spreadStatusReportWrapper = new SpreadStatusReportWrapper();
+		spreadStatusReportWrapper.setReports(reports);
+		return spreadStatusReportWrapper;
 	}
 	
 	/**

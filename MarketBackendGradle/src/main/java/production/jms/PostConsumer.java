@@ -40,9 +40,13 @@ public class PostConsumer implements MessageListener {
 	@Inject
 	private MatchingEngine matchingEngine;
 
-	@Inject
+	
 	private Logger logger;
 	
+	public PostConsumer() {
+		this.logger = Logger.getLogger(this.getClass());
+		System.out.println("Post Herp derp!!");
+	}
 	
 	@Override
 	public void onMessage(Message message) {
@@ -53,10 +57,11 @@ public class PostConsumer implements MessageListener {
 			Post post = this.postUnmarshaller.unmarshall(postString);
 			//send it to the matching engine
 			this.matchingEngine.postListing(post);
+			
 			logger.info("Post received, unmarshalled and posted to the matchingEngine");
 		} catch (JMSException | JAXBException e) {
 			// TODO Auto-generated catch block
-			logger.error(e.getMessage());
+			//logger.error(e.getMessage());
 		}
 		
 	

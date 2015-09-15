@@ -3,6 +3,8 @@ package test;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -29,7 +31,7 @@ public class TestSpreadReportGeneration {
 	private double sellPrice = 10.0;
 	private double buyPrice = 10.0;
 
-	
+	private String[] symbols = {goldSymbol, "SILVER", "COPPER", "IRON"};
 	private String silverSymbol = "SILVER";
 	private String copperSymbol = "COPPER";
 	private String ironSymbol = "IRON";
@@ -69,7 +71,7 @@ public class TestSpreadReportGeneration {
 	@Test
 	public void testSpreadReportContainsDefaultSymbol() {
 		this.matchingEngine = this.generateDefaultMatchingEngine();
-		ArrayList<SpreadStatusReport> spreadReports = this.matchingEngine.getSpreadStatusReports();
+		ArrayList<SpreadStatusReport> spreadReports = this.matchingEngine.getSpreadStatusReports().getReports();
 		SpreadStatusReport report = spreadReports.get(0);
 		System.out.println(report.getSymbol());
 	}
@@ -78,31 +80,14 @@ public class TestSpreadReportGeneration {
 	public void testMultipleSymbolReports() {
 		this.matchingEngine = this.generateFullMatchingEngine();
 		
-		ArrayList<SpreadStatusReport> spreadReports = this.matchingEngine.getSpreadStatusReports();
-		//unpack the arraylist and get all the symbols contained in the spread reports
-		//assert they contain all the symbols (Iron, copper, silver, gold)
+		ArrayList<SpreadStatusReport> spreadReports = this.matchingEngine.getSpreadStatusReports().getReports();
+		Assert.assertTrue(this.spreadReportContainsAllSymbolNames(spreadReports, this.symbols));
 	}
 	
 	private MatchingEngine generateDefaultMatchingEngine() {
 		MatchingEngine matchingEngine = new MatchingEngine();
-		
-		Post ask = new Post();
-		Post bid = new Post();
-		ask.setSymbol(this.goldSymbol);
-		ask.setPrice(this.sellPrice);
-		ask.setPostingType(PostingType.OFFER);
-		ask.setUserIdentifier(this.sellerId);
-		ask.setVolume(this.sellVolume);
-		ask.setDate(System.currentTimeMillis());
-		bid.setSymbol(this.goldSymbol);
-		bid.setPrice(this.buyPrice);
-		bid.setPostingType(PostingType.REQUEST);
-		bid.setUserIdentifier(this.buyerId);
-		bid.setVolume(this.buyVolume);
-		bid.setDate(System.currentTimeMillis());
-		
-		matchingEngine.postListing(ask);
-		matchingEngine.postListing(bid);
+		matchingEngine.postListing(this.ask);
+		matchingEngine.postListing(this.bid);
 		return matchingEngine;
 	}
 	
@@ -110,21 +95,34 @@ public class TestSpreadReportGeneration {
 		
 		MatchingEngine matchingEngine = this.generateDefaultMatchingEngine();
 		
-		Post silverAsk = this.ask.deepCopy();
-		silverAsk.setSymbol(silverSymbol);
-		
-		Post copperBid = this.bid.deepCopy();
-		copperBid.setSymbol(copperSymbol);
-		
-		Post ironAsk = this.ask.deepCopy();
-		ironAsk.setSymbol(ironSymbol);
-		
-		matchingEngine.postListing(silverAsk);
-		matchingEngine.postListing(copperBid);
-		matchingEngine.postListing(ironAsk);
-		
+		for(String symbol: this.symbols)
+		{
+			Post newPost = this.ask.deepCopy();
+			newPost.setSymbol(symbol);
+			matchingEngine.postListing(newPost);
+		}
+		//The matching engine should now contain an order book for each symbol in the 
+		//symbols field
 		return matchingEngine;
+	}
+	
+	public boolean spreadReportContainsAllSymbolNames(ArrayList<SpreadStatusReport> reports, String[] symbolNames)
+	{
+		//extract all of the reports from the arraylist,
 		
+		Set<String> symbolsInReport = new HashSet<String>(reports.size());
+		for(int i = 0; i < reports.size(); i++)
+		{
+			symbolsInReport.add(reports.get(i).getSymbol());
+		}
+		//then  for each symbol in the symbolNames parameter, verify that they are present in the report
+		for(String name: symbolNames)
+		{
+			if(!symbolsInReport.contains(name))
+				return false;
+		}
+		
+		return true;
 	}
 
 }

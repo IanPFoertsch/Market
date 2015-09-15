@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="test.TestSpreadReportGeneration" tests="2" skipped="0" failures="0" errors="0" timestamp="2015-09-14T23:35:09" hostname="WINDOWS-URHDCJE" time="0.006">
+  <properties/>
+  <testcase name="testMultipleSymbolReports" classname="test.TestSpreadReportGeneration" time="0.004"/>
+  <testcase name="testSpreadReportContainsDefaultSymbol" classname="test.TestSpreadReportGeneration" time="0.001"/>
+  <system-out><![CDATA[Matching Engine Created!
+Matching Engine Created!
+GOLD
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

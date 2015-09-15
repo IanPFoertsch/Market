@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="test.TestMatchingEngineResolution" tests="5" skipped="0" failures="0" errors="0" timestamp="2015-09-10T13:39:59" hostname="WINDOWS-URHDCJE" time="0.015">
+<testsuite name="test.TestMatchingEngineResolution" tests="6" skipped="0" failures="0" errors="0" timestamp="2015-09-14T23:35:09" hostname="WINDOWS-URHDCJE" time="0.056">
   <properties/>
-  <testcase name="testTwoElementSaleBetweenTwoParties" classname="test.TestMatchingEngineResolution" time="0.002"/>
+  <testcase name="testTwoElementSaleBetweenTwoParties" classname="test.TestMatchingEngineResolution" time="0.007"/>
   <testcase name="testSimpleOneCommodityExchange" classname="test.TestMatchingEngineResolution" time="0.0"/>
+  <testcase name="testSpreadReportGeneration" classname="test.TestMatchingEngineResolution" time="0.001"/>
   <testcase name="testMatchingEngineResolution" classname="test.TestMatchingEngineResolution" time="0.0"/>
   <testcase name="testpreferenceForLowestOffer" classname="test.TestMatchingEngineResolution" time="0.0"/>
-  <testcase name="testPreferenceForHighestRequest" classname="test.TestMatchingEngineResolution" time="0.0"/>
-  <system-out><![CDATA[]]></system-out>
+  <testcase name="testPreferenceForHighestRequest" classname="test.TestMatchingEngineResolution" time="0.001"/>
+  <system-out><![CDATA[Matching Engine Created!
+Matching Engine Created!
+Matching Engine Created!
+Matching Engine Created!
+Matching Engine Created!
+Matching Engine Created!
+]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
