@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 
+import javax.ejb.LocalBean;
 import javax.ejb.Startup;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -29,8 +30,8 @@ import production.entity.SpreadStatusReportWrapper;
  * @author e588318
  */
 @Startup
-
-@ApplicationScoped
+@LocalBean
+@javax.ejb.Singleton
 public class MatchingEngine {
 	
 	
@@ -40,7 +41,7 @@ public class MatchingEngine {
 
 	public MatchingEngine() {
 		// DataStructure initialization
-		System.out.println("Matching Engine Created!");
+		System.out.println("Matching Engine" + this + " Created!");
 		this.asks = new HashMap<String, PriorityQueue<Post>>();
 		this.bids = new HashMap<String, PriorityQueue<Post>>();
 	}
@@ -225,7 +226,7 @@ public class MatchingEngine {
 				// equal the offer volume
 			report.setVolume(offer.getVolume());
 		}
-		return ReportingUtility.loadTwoPostsToReport(report, offer, request);
+		return loadTwoPostsToReport(report, offer, request);
 	}
 
 	private MarketResolutionReport handleUnresolvedPost(Post post) {
@@ -260,14 +261,14 @@ public class MatchingEngine {
 				this.bids.put(post.getSymbol(), newListing);
 			}
 		}
-		return ReportingUtility.loadSinglePostToIncompleteReport(post);
+		return loadSinglePostToIncompleteReport(post);
 	}
 	
 	
 
-	private static class ReportingUtility {
+
 		
-		protected static MarketResolutionReport loadSinglePostToIncompleteReport(Post post){
+		private  MarketResolutionReport loadSinglePostToIncompleteReport(Post post){
 			MarketResolutionReport report = new MarketResolutionReport();
 			if(post.getPostingType() == PostingType.OFFER)
 			{//If we are receiving an offer, then load the information to theseller field
@@ -285,7 +286,7 @@ public class MatchingEngine {
 			}
 		}
 			
-		protected static MarketResolutionReport loadTwoPostsToReport(MarketResolutionReport report, Post offer, Post request)
+		private MarketResolutionReport loadTwoPostsToReport(MarketResolutionReport report, Post offer, Post request)
 			{
 				report.setBuyerIdentifier(request.getUserIdentifier());
 				report.setBuyerDate(request.getDate());
@@ -299,7 +300,6 @@ public class MatchingEngine {
 						return report;
 
 			}
-	}
 	
 	/**
 	 * getSpreadStatusReports generates an arraylist of spread status reports 

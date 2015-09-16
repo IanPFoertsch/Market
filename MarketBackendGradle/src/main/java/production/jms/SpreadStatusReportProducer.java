@@ -17,6 +17,8 @@ import org.jboss.logging.Logger;
 
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.DependsOn;
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
 import javax.ejb.Startup;
 import javax.enterprise.context.ApplicationScoped;
 
@@ -27,8 +29,9 @@ import production.marketforum.MatchingEngine;
 import production.marshalling.MarshallingWrapper;
 import production.marshalling.SpreadStatusReportMarshaller;
 
-
-@ApplicationScoped
+@Startup
+@LocalBean
+@javax.ejb.Singleton
 @DependsOn("MatchingEngine")
 public class SpreadStatusReportProducer implements Runnable {
 	
@@ -41,7 +44,7 @@ public class SpreadStatusReportProducer implements Runnable {
 	@Resource(mappedName = spreadStatusReportTopicName)
 	private Topic topic;
 	
-	@Inject
+	@EJB
 	private MatchingEngine matchingEngine;
 	
 	private Logger logger;
@@ -50,7 +53,7 @@ public class SpreadStatusReportProducer implements Runnable {
 	public SpreadStatusReportProducer()
 	{
 		this.logger = Logger.getLogger(this.getClass());
-		System.out.println("spread report producer constructed!");
+		logger.info("spread report producer constructed!");
 		
 		
 		try {
@@ -68,7 +71,7 @@ public class SpreadStatusReportProducer implements Runnable {
 		
 		String marshalledReport = this.marshallingWrapper.marshall(spreadStatusReportWrapper);
 		context.createProducer().send(topic, marshalledReport);
-		System.out.println("Report sent!");
+		logger.info("Report sent from status report producer.");
 		
 	}
 
@@ -76,10 +79,10 @@ public class SpreadStatusReportProducer implements Runnable {
 	public void run() {
 		try {
 			this.sendMessage();
-			System.out.println("messageSent!");
+			//logger.info("messageSent!");
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		
 	}

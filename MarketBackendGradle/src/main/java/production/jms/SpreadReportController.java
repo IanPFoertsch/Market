@@ -7,6 +7,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.DependsOn;
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -15,13 +18,15 @@ import javax.xml.bind.JAXBException;
 import org.jboss.logging.Logger;
 
 
-@ApplicationScoped
-@DependsOn("SpreadStatusReportProducer")
+@Startup
+@LocalBean
+@javax.ejb.Singleton
+@DependsOn({"MatchingEngine","SpreadStatusReportProducer"})
 public class SpreadReportController {
 	
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 	
-	@Inject
+	@EJB
 	private SpreadStatusReportProducer spreadStatusReportProducer;
 	
 	private Logger logger;

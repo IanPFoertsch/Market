@@ -14,6 +14,7 @@ import org.jboss.logging.Logger;
 
 
 import javax.ejb.ActivationConfigProperty;
+import javax.ejb.EJB;
 
 import production.entity.Post;
 import production.marketforum.MatchingEngine;
@@ -34,18 +35,18 @@ public class PostConsumer implements MessageListener {
 	@Resource(mappedName = postQueueName)
 	private Queue postQueue;
 	
-	@Inject 
+	
 	private PostUnmarshaller postUnmarshaller;
 	
-	@Inject
+	@EJB
 	private MatchingEngine matchingEngine;
 
 	
 	private Logger logger;
 	
-	public PostConsumer() {
+	public PostConsumer() throws JAXBException {
+		this.postUnmarshaller = new PostUnmarshaller();
 		this.logger = Logger.getLogger(this.getClass());
-		System.out.println("Post Herp derp!!");
 	}
 	
 	@Override

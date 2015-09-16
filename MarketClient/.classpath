@@ -10,6 +10,6 @@
 	<classpathentry kind="lib" path="C:/Users/Ian/workspace/libraries/resteasy-jaxrs-3.0.9.Final/lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Ian/workspace/libraries/resteasy-jaxrs-3.0.9.Final/lib/httpclient-4.2.6.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Ian/workspace/libraries/resteasy-jaxrs-3.0.9.Final/lib/httpcore-4.2.5.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/MarketService"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/MarketObjects"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
