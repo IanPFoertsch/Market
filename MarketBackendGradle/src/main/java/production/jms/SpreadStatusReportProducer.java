@@ -71,7 +71,7 @@ public class SpreadStatusReportProducer implements Runnable {
 		
 		String marshalledReport = this.marshallingWrapper.marshall(spreadStatusReportWrapper);
 		context.createProducer().send(topic, marshalledReport);
-		logger.info("Report sent from status report producer.");
+		//logger.info("Report sent from status report producer.");
 		
 	}
 

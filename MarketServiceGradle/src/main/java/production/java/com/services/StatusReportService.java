@@ -6,17 +6,20 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import production.entity.SpreadStatusReportWrapper;
 import production.storage.StatusReportStorage;
 
 @Path("/marketReport")
-@Produces(MediaType.APPLICATION_XML)
+@Produces(MediaType.APPLICATION_JSON)
 @RequestScoped
 public class StatusReportService {
 	
 	@Inject
 	private StatusReportStorage statusReportStorage;
+	
+	
 	
 	
 	@Path("")
@@ -25,5 +28,10 @@ public class StatusReportService {
 	{
 		return this.statusReportStorage.getSpreadStatusReportWrapper();
 	}
+
+	
+	
+	
+	
 	
 }
