@@ -25,7 +25,12 @@ public class StatusReportService {
 	@Path("")
 	@GET
 	public SpreadStatusReportWrapper getSpreadStatusReports()
-	{
+	{try {
+		System.out.println(statusReportStorage.getSpreadStatusReportWrapper().getReports().size());
+	}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
 		return this.statusReportStorage.getSpreadStatusReportWrapper();
 	}
 

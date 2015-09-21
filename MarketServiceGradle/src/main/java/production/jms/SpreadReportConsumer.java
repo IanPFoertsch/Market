@@ -49,6 +49,7 @@ public class SpreadReportConsumer implements MessageListener {
 			//The cast operation is unavoidable below, due to the fact that we are using a "generic" marshaller
 			//TODO: encase the cast below in a try-catch block, and address failed casts in the catch section
 			SpreadStatusReportWrapper spreadStatusReportWrapper = (SpreadStatusReportWrapper) this.marshallingWrapper.unmarshal(xml);
+			
 			//set the in-memory repo to contain this most recent report wrapper
 			this.statusReportStorage.setSpreadStatusReportWrapper(spreadStatusReportWrapper);
 		}

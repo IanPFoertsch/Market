@@ -58,21 +58,6 @@ public class OfferService {
 	private PostUnmarshaller postUnmarshaller;
 	
 	
-	@Path("/CurrentOffer")
-	@Produces(MediaType.APPLICATION_XML)
-	@GET
-	public Post getCurrentRequest() {
-		System.out.println("request for current offer received!");
-		Post post = new Post();
-		post.setPostingType(PostingType.OFFER);
-		post.setPrice(1.0);
-		post.setSymbol("GOLD");
-		post.setDate(System.currentTimeMillis());
-		post.setUserIdentifier("Ian");
-		post.setVolume(1.0);
-		
-		return post;
-	}
 	
 	@Path("")
 	@Consumes(MediaType.APPLICATION_XML)
@@ -97,16 +82,14 @@ public class OfferService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@POST
 	public Response submitJSONPost(Post post) {
-		System.out.println("Post received!" + post);
-		return Response.ok().build();
-	
 		
-		
-		
-
-		
-		
-		
-		
+		try {
+			System.out.println("Diagnostic");
+			this.postProducer.sendMessage(post);
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return Response.ok().build();	
 	}
 }

@@ -47,6 +47,7 @@ public class PostConsumer implements MessageListener {
 	public PostConsumer() throws JAXBException {
 		this.postUnmarshaller = new PostUnmarshaller();
 		this.logger = Logger.getLogger(this.getClass());
+		this.logger.info("PostConsumerCreated!");
 	}
 	
 	@Override
@@ -58,11 +59,11 @@ public class PostConsumer implements MessageListener {
 			Post post = this.postUnmarshaller.unmarshall(postString);
 			//send it to the matching engine
 			this.matchingEngine.postListing(post);
+			System.out.println(message.getBody(String.class));
 			
 			logger.info("Post received, unmarshalled and posted to the matchingEngine");
 		} catch (JMSException | JAXBException e) {
-			// TODO Auto-generated catch block
-			//logger.error(e.getMessage());
+			logger.debug(e.getMessage());
 		}
 		
 	

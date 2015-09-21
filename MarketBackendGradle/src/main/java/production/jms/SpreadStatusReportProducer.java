@@ -67,8 +67,6 @@ public class SpreadStatusReportProducer implements Runnable {
 	public void sendMessage() throws JAXBException {
 		//Step 1: get the report from the matchingEngine
 		SpreadStatusReportWrapper spreadStatusReportWrapper = this.matchingEngine.getSpreadStatusReports();
-
-		
 		String marshalledReport = this.marshallingWrapper.marshall(spreadStatusReportWrapper);
 		context.createProducer().send(topic, marshalledReport);
 		//logger.info("Report sent from status report producer.");
