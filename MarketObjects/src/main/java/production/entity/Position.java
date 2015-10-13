@@ -23,7 +23,7 @@ public class Position implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	private static final double EQUALITY_COMPARISON = .0001;
 
 
 	@Id
@@ -94,6 +94,16 @@ public class Position implements Serializable {
 		String status = "Position:\nuser_identifier = " + this.getUserIdentifier() +
 				"\nsymbol = " + this.symbol +  "\nvolume = " +this.volume + "\n" ;
 		return status;
+	}
+	
+	public boolean equals(Position otherPosition) {
+		double delta = this.getVolume() - otherPosition.getVolume();
+		if(this.getSymbol().equalsIgnoreCase(otherPosition.getSymbol()) &&
+				this.getUserIdentifier().equalsIgnoreCase(otherPosition.getUserIdentifier()) &&
+				Math.abs(delta) < EQUALITY_COMPARISON)
+			return true;
+		else 
+			return false;
 	}
 	
 	public static class Builder {
