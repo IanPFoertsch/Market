@@ -12,7 +12,6 @@ import javax.jms.Queue;
 import javax.xml.bind.JAXBException;
 import org.jboss.logging.Logger;
 
-
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.EJB;
 

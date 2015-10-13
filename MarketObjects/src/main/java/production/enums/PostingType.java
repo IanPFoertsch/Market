@@ -1,13 +1,13 @@
 package production.enums;
 
 public enum PostingType {
-	OFFER, REQUEST;
+	BID, ASK;
 	public static String toString(PostingType type){
 		switch(type){
-		case OFFER:
-			return "OFFER";
-		case REQUEST:
-			return "REQUEST";
+		case BID:
+			return "BID";
+		case ASK:
+			return "ASK";
 		default:
 			return "UNKNOWN";
 		}

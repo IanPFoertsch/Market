@@ -44,7 +44,7 @@ dependencies {
     // The production code uses the SLF4J logging API at compile time
     // compile = compile time dependency
     // 'group_id:artifact_id:version_id'
-    compile 'org.slf4j:slf4j-api:1.7.12'
+    
     compile 'org.wildfly:wildfly-spec-api:8.2.1.Final'
     compile files('C:/Users/Ian/workspace/MarketObjects/build/libs/MarketObjects.jar')
 

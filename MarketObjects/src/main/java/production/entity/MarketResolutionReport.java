@@ -2,29 +2,68 @@ package production.entity;
 
 
 
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import production.enums.PostOutcome;
 
+
+
 @XmlRootElement(name ="marketResolutionReport")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class MarketResolutionReport {
+@Entity
+@Table(name = "sales")
+public class MarketResolutionReport implements Serializable{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 
+	 */
+	
+
+	@Column(name="symbol")
 	@XmlElement
 	private String Symbol;
+	
+	@Column(name= "price")
 	@XmlElement
 	private double price;
+	
+	@Column(name = "volume")
 	@XmlElement
 	private double volume;
+	
+	@Id
+	@Column(name = "seller_identifier")
 	@XmlElement
 	private String sellerIdentifier;
+	@Id
+	@Column(name = "buyer_identifier")
 	@XmlElement
 	private String buyerIdentifier;
+	
+	@Column(name = "post_outcome")
 	@XmlElement
 	private PostOutcome postOutcome;
+	
+	@Id
+	@Column(name = "seller_date")
 	@XmlElement
 	private long sellerDate;
+	
+	@Id
+	@Column(name = "buyer_date")
 	@XmlElement
 	private long buyerDate;
 

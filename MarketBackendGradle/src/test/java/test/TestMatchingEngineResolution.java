@@ -20,8 +20,8 @@ import production.marketforum.MatchingEngine;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TestMatchingEngineResolution {
-	private Post offer;
-	private Post request;
+	private Post ask;
+	private Post bid;
 	private String Symbol = "GOLD";
 	private String sellerId = "Seller";
 	private String buyerId = "Buyer";
@@ -43,20 +43,20 @@ public class TestMatchingEngineResolution {
 
 	@Before
 	public void setUp() throws Exception {
-		this.offer = new Post();
-		this.request = new Post();
-		this.offer.setSymbol(this.Symbol);
-		this.offer.setPrice(this.sellPrice);
-		this.offer.setPostingType(PostingType.OFFER);
-		this.offer.setUserIdentifier(this.sellerId);
-		this.offer.setVolume(this.sellVolume);
-		this.offer.setDate(System.currentTimeMillis());
-		this.request.setSymbol(this.Symbol);
-		this.request.setPrice(this.buyPrice);
-		this.request.setPostingType(PostingType.REQUEST);
-		this.request.setUserIdentifier(this.buyerId);
-		this.request.setVolume(this.buyVolume);
-		this.request.setDate(System.currentTimeMillis());
+		this.ask = new Post();
+		this.bid = new Post();
+		this.ask.setSymbol(this.Symbol);
+		this.ask.setPrice(this.sellPrice);
+		this.ask.setPostingType(PostingType.ASK);
+		this.ask.setUserIdentifier(this.sellerId);
+		this.ask.setVolume(this.sellVolume);
+		this.ask.setDate(System.currentTimeMillis());
+		this.bid.setSymbol(this.Symbol);
+		this.bid.setPrice(this.buyPrice);
+		this.bid.setPostingType(PostingType.BID);
+		this.bid.setUserIdentifier(this.buyerId);
+		this.bid.setVolume(this.buyVolume);
+		this.bid.setDate(System.currentTimeMillis());
 		this.matchingEngine = new MatchingEngine();
 	}
 
@@ -66,40 +66,40 @@ public class TestMatchingEngineResolution {
 
 	@Test
 	public void testMatchingEngineResolution() {
-		LinkedList<MarketResolutionReport> reports = this.matchingEngine.postListing(this.offer);
+		LinkedList<MarketResolutionReport> reports = this.matchingEngine.postListing(this.ask);
 		assertTrue(reports.size() == 1);
 	}
 	
 	@Test
 	public void testSimpleOneCommodityExchange()
 	{
-		this.matchingEngine.postListing(this.offer);
-		LinkedList<MarketResolutionReport> reports = this. matchingEngine.postListing(this.request);
+		this.matchingEngine.postListing(this.ask);
+		LinkedList<MarketResolutionReport> reports = this. matchingEngine.postListing(this.bid);
 		MarketResolutionReport firstReport = reports.getFirst();
-		assertTrue(this.reportIdentitiesMatchPostings(firstReport, offer, request));
+		assertTrue(this.reportIdentitiesMatchPostings(firstReport, ask, bid));
 	}
 
 	@Test
 	public void testTwoElementSaleBetweenTwoParties()
 	{
-		Post smallRequestOne = this.request.deepCopy();
-		Post smallRequestTwo = this.request.deepCopy();
+		Post smallRequestOne = this.bid.deepCopy();
+		Post smallRequestTwo = this.bid.deepCopy();
 		smallRequestOne.setVolume(this.buyVolume * .5);
 		smallRequestTwo.setVolume(this.buyVolume * .5);
 		this.matchingEngine.postListing(smallRequestOne);
 		this.matchingEngine.postListing(smallRequestTwo);
-		LinkedList<MarketResolutionReport> reports = this.matchingEngine.postListing(this.offer);
+		LinkedList<MarketResolutionReport> reports = this.matchingEngine.postListing(this.ask);
 		
 		assertTrue(reports.size() == 2
-					&& this.reportIdentitiesMatchPostings(reports.getFirst(), this.offer, smallRequestOne)
-					&& this.reportIdentitiesMatchPostings(reports.getFirst(), this.offer, smallRequestOne));
+					&& this.reportIdentitiesMatchPostings(reports.getFirst(), this.ask, smallRequestOne)
+					&& this.reportIdentitiesMatchPostings(reports.getFirst(), this.ask, smallRequestOne));
 	}
 
 	@Test
 	public void testpreferenceForLowestOffer() {
-		Post lowPriceOffer = this.offer.deepCopy();
-		Post highPriceOffer = this.offer.deepCopy();
-		Post localRequest = this.request.deepCopy();
+		Post lowPriceOffer = this.ask.deepCopy();
+		Post highPriceOffer = this.ask.deepCopy();
+		Post localRequest = this.bid.deepCopy();
 		this.matchingEngine.postListing(lowPriceOffer);
 		this.matchingEngine.postListing(highPriceOffer);
 		LinkedList<MarketResolutionReport> reports =	this.matchingEngine.postListing(localRequest);	
@@ -111,9 +111,9 @@ public class TestMatchingEngineResolution {
 
 	@Test
 	public void testPreferenceForHighestRequest()	{
-		Post localOffer = this.offer.deepCopy();
-		Post highPriceRequest = this.request.deepCopy();
-		Post lowPriceRequest = this.request.deepCopy();
+		Post localOffer = this.ask.deepCopy();
+		Post highPriceRequest = this.bid.deepCopy();
+		Post lowPriceRequest = this.bid.deepCopy();
 		this.matchingEngine.postListing(highPriceRequest);
 		this.matchingEngine.postListing(lowPriceRequest);
 		LinkedList<MarketResolutionReport> reports = this.matchingEngine.postListing(localOffer);
@@ -133,12 +133,12 @@ public class TestMatchingEngineResolution {
 	
 	
 
-	private boolean reportIdentitiesMatchPostings(MarketResolutionReport report, Post offer, Post request)
+	private boolean reportIdentitiesMatchPostings(MarketResolutionReport report, Post ask, Post bid)
 	{
-		if(report.getBuyerIdentifier().equalsIgnoreCase(request.getUserIdentifier())
-				&& report.getBuyerDate() == request.getDate() 
-				&& report.getSellerIdentifier().equalsIgnoreCase(offer.getUserIdentifier())
-				&& report.getSellerDate() == offer.getDate())
+		if(report.getBuyerIdentifier().equalsIgnoreCase(bid.getUserIdentifier())
+				&& report.getBuyerDate() == bid.getDate() 
+				&& report.getSellerIdentifier().equalsIgnoreCase(ask.getUserIdentifier())
+				&& report.getSellerDate() == ask.getDate())
 			return true;
 		else
 			return false;

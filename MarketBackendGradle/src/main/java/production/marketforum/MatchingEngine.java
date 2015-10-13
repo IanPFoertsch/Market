@@ -25,7 +25,7 @@ import production.entity.SpreadStatusReportWrapper;
 
 /**
  * Market is the forum in which buyers are matched with sellers. So we must have
- * two hashmaps, one for offers(from sellers) and one for requests(from buyers)
+ * two hashmaps, one for asks(from sellers) and one for bids(from buyers)
  * 
  * @author e588318
  */
@@ -48,7 +48,7 @@ public class MatchingEngine {
 
 	public LinkedList<MarketResolutionReport> postListing(Post incomingPost){
 		Post post = incomingPost.deepCopy();
-		if(post.getPostingType() == PostingType.OFFER){
+		if(post.getPostingType() == PostingType.ASK){
 			
 			//does the market contain a complementaryListing for this symbol?
 					//if yes, attempt to resolve to post
@@ -97,15 +97,15 @@ public class MatchingEngine {
 	private LinkedList<MarketResolutionReport> resolvePost(Post post) {
 		PriorityQueue<Post> pertinentListing;
 		LinkedList<MarketResolutionReport> reports = new LinkedList<>();
-		// get the complimentary listing for the post (if the post is anoffer,
-		// get the requests and vice versa
-		if (post.getPostingType() == PostingType.OFFER)
+		// get the complimentary listing for the post (if the post is anASK,
+		// get the bids and vice versa
+		if (post.getPostingType() == PostingType.ASK)
 			pertinentListing = this.bids.get(post.getSymbol());
 		else
 			pertinentListing = this.asks.get(post.getSymbol());
 
 		// Check to see if the PertinentListing contains an applicableposting
-		// and the offer still contains unfulfilled volume
+		// and the ASK still contains unfulfilled volume
 		while (this.complimentaryListingContainsApplicablePostings(pertinentListing, post) && post.getVolume() > 0) { 
 			// poll the	listing to obtain the best listing price
 			Post bestListing = pertinentListing.poll();
@@ -134,13 +134,13 @@ public class MatchingEngine {
 		String status = "";
 		for(PriorityQueue<Post> queue : this.asks.values()) {
 			if(!queue.isEmpty()) {
-				status += "Offer Listing " + queue.peek().getSymbol() + " of size : " + queue.size() + "\n";
+				status += "ASK Listing " + queue.peek().getSymbol() + " of size : " + queue.size() + "\n";
 			}	 
 		}
 		for(PriorityQueue<Post> queue: this.bids.values())
 		{
 			if(!queue.isEmpty()) {
-				status += "Request Listing " + queue.peek().getSymbol() + " of size : " + queue.size() + "\n";
+				status += "bid Listing " + queue.peek().getSymbol() + " of size : " + queue.size() + "\n";
 			}	 
 		}
 		return status;
@@ -153,16 +153,16 @@ public class MatchingEngine {
 		//the pertinent listing, and then checks to see if the listing contains another
 		//post with the peek() method, throwing a null pointer exception.
 		try{
-			//if we are dealing with an offer posting,
-			if(post.getPostingType() == PostingType.OFFER)
-			{ 	//then does the listing (of requests) contain postings
+			//if we are dealing with an ASK posting,
+			if(post.getPostingType() == PostingType.ASK)
+			{ 	//then does the listing (of bids) contain postings
 				//which are greater than or equal to the price of the posting?
 				if(listing.peek().getPrice() >= post.getPrice())
 					return true;
 				else
 					return false;
 			}
-			else{//otherwise the post is a request, and check if the best offer price
+			else{//otherwise the post is a bid, and check if the best ASK price
 				//is LESS than or equal to the post’s price
 				if(listing.peek().getPrice() <= post.getPrice())
 					return true;
@@ -177,8 +177,8 @@ public class MatchingEngine {
 
 	/**
 	 * The applyReportToListingObjects accepts a report object, and two post
-	 * objects describing the request and offer posts The method subtracts the
-	 * report’s volume field from both the request and offer objects Volume
+	 * objects describing the bid and ASK posts The method subtracts the
+	 * report’s volume field from both the bid and ASK objects Volume
 	 * field
 	 */
 	private void subtractReportVolumeFromPosts(MarketResolutionReport report, Post postObject1, Post postObject2) {
@@ -187,75 +187,75 @@ public class MatchingEngine {
 	}
 
 	/**
-	 * ResolveListings accepts a request and an offer, and builds a
+	 * ResolveListings accepts a bid and an ASK, and builds a
 	 * marketResolutionReport describing the parameter of the sale, and returns
-	 * the report param request param offer return
+	 * the report param bid param ASK return
 	 */
 	private MarketResolutionReport resolveListings(Post firstPost, Post secondPost) {
-		// handle incoming ambiguity: Which post is the offer and which post
-		// isthe request
-		Post offer;
-		Post request;
-		if (firstPost.getPostingType() == PostingType.OFFER) {
-			offer = firstPost;
-			request = secondPost;
+		// handle incoming ambiguity: Which post is the ASK and which post
+		// isthe bid
+		Post ask;
+		Post bid;
+		if (firstPost.getPostingType() == PostingType.ASK) {
+			ask= firstPost;
+			bid = secondPost;
 		} else {
-			offer = secondPost;
-			request = firstPost;
+			ask  = secondPost;
+			bid = firstPost;
 		}
-		// Two possible use cases here: the offer requires more volume than
-		// therequest object
+		// Two possible use cases here: the ask  requires more volume than
+		// thebid object
 		// possesses, or vice versa.
 		MarketResolutionReport report = new MarketResolutionReport();
-		report.setBuyerIdentifier(request.getUserIdentifier());
-		report.setSellerIdentifier(offer.getUserIdentifier());
-		report.setSymbol(offer.getSymbol());
+		report.setBuyerIdentifier(bid.getUserIdentifier());
+		report.setSellerIdentifier(ask .getUserIdentifier());
+		report.setSymbol(ask .getSymbol());
 		// The price will be the seller’s price
-		report.setPrice(offer.getPrice());
+		report.setPrice(ask .getPrice());
 		// Determine the sale volume
-		if (offer.getVolume() > request.getVolume()) {
-			// the offer will have leftover volume, the request will have 0
+		if (ask.getVolume() > bid.getVolume()) {
+			// the ask  will have leftover volume, the bid will have 0
 			// volume,
-			// therefore the sale volume will be equal to the request’s current
+			// therefore the sale volume will be equal to the bid’s current
 			// volume.
-			report.setVolume(request.getVolume());
-		} else {// otherwise the offer volume is less than or equal to the
-				// request
-				// The offer will be completely filled by the request, so set
+			report.setVolume(bid.getVolume());
+		} else {// otherwise the ask volume is less than or equal to the
+				// bid
+				// The ask will be completely filled by the bid, so set
 				// the sale volume to
-				// equal the offer volume
-			report.setVolume(offer.getVolume());
+				// equal the ask volume
+			report.setVolume(ask.getVolume());
 		}
-		return loadTwoPostsToReport(report, offer, request);
+		return loadTwoPostsToReport(report, ask, bid);
 	}
 
 	private MarketResolutionReport handleUnresolvedPost(Post post) {
 		MarketResolutionReport report = new MarketResolutionReport();
 		report.setPostOutcome(PostOutcome.NOT_COMPLETED);
-		// Is this an offer or a request?
-		if (post.getPostingType() == PostingType.OFFER) {
-			// Does a listing of this type currently exist in the offers field
+		// Is this an ask or a bid?
+		if (post.getPostingType() == PostingType.ASK) {
+			// Does a listing of this type currently exist in the asks field
 			// for the post’s symbol?
 			if (this.asks.containsKey(post.getSymbol())) {
 				// add it to that order book
 				this.asks.get(post.getSymbol()).add(post);
 			} else { // otherwise generate a new priority queue, insert the
 						// post to that queue, and insert the queue to the
-						// offers field mapped
+						// asks field mapped
 						// to the post’s symbol
 				PriorityQueue<Post> newListing = new PriorityQueue<>();
 				newListing.add(post);
 				this.asks.put(post.getSymbol(), newListing);
 			}
 		}
-		// else it is request:
+		// else it is bid:
 		else {
-			// Do the request listings contain a queue for this symbol?
+			// Do the bid listings contain a queue for this symbol?
 			// if so, add it to that listing
 			if (this.bids.containsKey(post.getSymbol())) {
 				this.bids.get(post.getSymbol()).add(post);
 			} else {// otherwise generate a new queue containing this post
-					// and add it to the this.requests field
+					// and add it to the this.bids field
 				PriorityQueue<Post> newListing = new PriorityQueue<>();
 				newListing.add(post);
 				this.bids.put(post.getSymbol(), newListing);
@@ -270,8 +270,8 @@ public class MatchingEngine {
 		
 		private  MarketResolutionReport loadSinglePostToIncompleteReport(Post post){
 			MarketResolutionReport report = new MarketResolutionReport();
-			if(post.getPostingType() == PostingType.OFFER)
-			{//If we are receiving an offer, then load the information to theseller field
+			if(post.getPostingType() == PostingType.ASK)
+			{//If we are receiving an ask, then load the information to theseller field
 				//of the report
 				report.setSellerIdentifier(post.getUserIdentifier());
 				report.setSellerDate(post.getDate());
@@ -286,15 +286,15 @@ public class MatchingEngine {
 			}
 		}
 			
-		private MarketResolutionReport loadTwoPostsToReport(MarketResolutionReport report, Post offer, Post request)
+		private MarketResolutionReport loadTwoPostsToReport(MarketResolutionReport report, Post ask, Post bid)
 			{
-				report.setBuyerIdentifier(request.getUserIdentifier());
-				report.setBuyerDate(request.getDate());
+				report.setBuyerIdentifier(bid.getUserIdentifier());
+				report.setBuyerDate(bid.getDate());
 				report.setPostOutcome(PostOutcome.COMPLETED);
-				//Seller’s rule, therefore we set the report’s price to the offer’s listed price
-				report.setPrice(offer.getPrice());
-				report.setSellerIdentifier(offer.getUserIdentifier());
-				report.setSellerDate(offer.getDate());
+				//Seller’s rule, therefore we set the report’s price to the ask’s listed price
+				report.setPrice(ask.getPrice());
+				report.setSellerIdentifier(ask.getUserIdentifier());
+				report.setSellerDate(ask.getDate());
 				//volume is set when the two postings are resolved, therefore we don’t have to worry wout setting it here,
 				//and we can just return the report
 						return report;

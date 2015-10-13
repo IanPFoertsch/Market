@@ -6,6 +6,7 @@ import javax.xml.bind.Unmarshaller;
 
 import production.entity.Post;
 import production.entity.SpreadStatusReportWrapper;
+import production.entity.UserProfile;
 import production.enums.PostingType;
 import production.marshalling.PostMarshaller;
 
@@ -25,7 +26,7 @@ public class clientDriver {
 		
 		Post post = new Post();
 		
-		post.setPostingType(PostingType.OFFER);
+		post.setPostingType(PostingType.ASK);
 		post.setPrice(1.0);
 		post.setSymbol("GOLD");
 		post.setDate(System.currentTimeMillis());
@@ -48,9 +49,22 @@ public class clientDriver {
 		WebTarget target = client.target(targetURL + resourceUrl);
 		
 		Response response = target.request().post(Entity.json(post));
+		System.out.println(mapper.writeValueAsString(post));
+		response.close();
 		
+		UserProfile userProfile = new UserProfile();
+		userProfile.setUserIdentifier("clerp");
+		userProfile.setPassword("merp");
 		
-		System.out.println(response.getStatus());
+		String accountUrl = "/account";
+		WebTarget otherTarget = client.target(targetURL + accountUrl);
+		Response otherResponse = otherTarget.request().post(Entity.json(userProfile));
+		//Response otherResponse = otherTarget.request().get();
+		
+		//String result = otherResponse.readEntity(String.class);
+		//System.out.println(otherResponse.getStatus());
+		//System.out.println(result);
+		
 		
 		
 		

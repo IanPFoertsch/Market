@@ -51,13 +51,13 @@ public class TestSpreadReportGeneration {
 		this.bid = new Post();
 		this.ask.setSymbol(this.goldSymbol);
 		this.ask.setPrice(this.sellPrice);
-		this.ask.setPostingType(PostingType.OFFER);
+		this.ask.setPostingType(PostingType.ASK);
 		this.ask.setUserIdentifier(this.sellerId);
 		this.ask.setVolume(this.sellVolume);
 		this.ask.setDate(System.currentTimeMillis());
 		this.bid.setSymbol(this.goldSymbol);
 		this.bid.setPrice(this.buyPrice);
-		this.bid.setPostingType(PostingType.REQUEST);
+		this.bid.setPostingType(PostingType.BID);
 		this.bid.setUserIdentifier(this.buyerId);
 		this.bid.setVolume(this.buyVolume);
 		this.bid.setDate(System.currentTimeMillis());

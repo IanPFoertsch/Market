@@ -39,11 +39,11 @@ public class Post implements Comparable<Post>{
 	
 	@Override
 	public int compareTo(Post otherPost) {
-		if(this.postingType == PostingType.OFFER)
-			//Return -1 to indicate that offers should return the lowest possible priced offer
+		if(this.postingType == PostingType.ASK)
+			//Return -1 to indicate that Asks should return the lowest possible priced offer
 					return this.getPrice() <= otherPost.getPrice() ? -1:1;
 		else
-			//we want to reverse the ordering here if these are Requests,
+			//we want to reverse the ordering here if these are Bids,
 			//because the highest available offer should be returned
 			return this.getPrice() >= otherPost.getPrice() ? -1:1;
 	}
