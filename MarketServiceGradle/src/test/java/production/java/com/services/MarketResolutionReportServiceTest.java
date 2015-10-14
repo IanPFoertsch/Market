@@ -2,6 +2,8 @@ package production.java.com.services;
 
 import static org.junit.Assert.*;
 
+
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -10,7 +12,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+
 
 import production.business.MarketResolutionReportService;
 import production.dao.MarketResolutionReportDao;
@@ -24,12 +28,14 @@ public class MarketResolutionReportServiceTest {
 	private String sellerId = "seller";
 	private String buyerId = "buyer";
 	private String symbol = "GOLD";
+	private String cashSymbol = "CASH";
 	private double volume = 10d;
 	private double price = 5d;
 	private MarketResolutionReport report; 
 	private Position sellerPosition;
 	private Position buyerPosition;
-	
+	private Position sellerCash;
+	private Position buyerCash;
 	@Mock
 	private PositionDao positionDao;
 	@Mock
@@ -59,11 +65,17 @@ public class MarketResolutionReportServiceTest {
 		report.setVolume(volume);
 		report.setPrice(price);
 		report.setSymbol(symbol);
+		double cash = this.report.getPrice() * this.report.getVolume();
+		
 		
 		this.sellerPosition = new Position.Builder().
-				setUserIdentifier(sellerId).setSymbol(symbol).setVolume(volume).build();
+				setUserIdentifier(sellerId).setSymbol(symbol).setVolume(-volume).build();
 		this.buyerPosition = new Position.Builder().
 				setUserIdentifier(buyerId).setSymbol(symbol).setVolume(volume).build();
+		
+		this.sellerCash = new Position.Builder().setSymbol("CASH").setUserIdentifier(sellerId).setVolume(cash).build();
+		this.buyerCash = new Position.Builder().setSymbol(cashSymbol).setUserIdentifier(buyerId).setVolume( - cash).build();
+		
 	}
 
 	@After
@@ -75,9 +87,22 @@ public class MarketResolutionReportServiceTest {
 	 * application method. 
 	 */
 	@Test
-	public void testReportApplication() {
+	public void testPositionDaoLink() {
 		this.service.applyResolutionReport(report);
-		//Mockito.
+		Mockito.verify(positionDao, Mockito.atLeastOnce()).
+			applyMarketResolutionReport(Mockito.any(Position.class), Mockito.any(Position.class), Mockito.any(Position.class), Mockito.any(Position.class));
 	}
-
+	
+	@Test
+	public void testMarketResolutionReportDaoLink()	{
+		this.service.applyResolutionReport(report);
+		Mockito.verify(this.marketResolutionReportDao, Mockito.atLeastOnce()).persist(report);
+	}
+	
+	@Test
+	public void testPositionGenerationFromReport() {
+		this.service.applyResolutionReport(report);
+		Mockito.verify(this.positionDao, Mockito.atLeastOnce()).
+			applyMarketResolutionReport(this.sellerCash, this.buyerCash, this.sellerPosition, this.buyerPosition);
+	}
 }

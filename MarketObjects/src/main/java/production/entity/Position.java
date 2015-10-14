@@ -95,15 +95,23 @@ public class Position implements Serializable {
 				"\nsymbol = " + this.symbol +  "\nvolume = " +this.volume + "\n" ;
 		return status;
 	}
-	
-	public boolean equals(Position otherPosition) {
-		double delta = this.getVolume() - otherPosition.getVolume();
-		if(this.getSymbol().equalsIgnoreCase(otherPosition.getSymbol()) &&
-				this.getUserIdentifier().equalsIgnoreCase(otherPosition.getUserIdentifier()) &&
-				Math.abs(delta) < EQUALITY_COMPARISON)
-			return true;
-		else 
+	@Override
+	public boolean equals(Object otherObject){
+		try {
+			Position otherPosition = (Position) otherObject;
+			double delta = this.getVolume() - otherPosition.getVolume();
+			if(this.getSymbol().equalsIgnoreCase(otherPosition.getSymbol()) &&
+					this.getUserIdentifier().equalsIgnoreCase(otherPosition.getUserIdentifier()) &&
+					Math.abs(delta) < EQUALITY_COMPARISON)
+				return true;
+			else 
+				return false;
+		}
+		catch(ClassCastException e)
+		{
 			return false;
+		}
+		
 	}
 	
 	public static class Builder {
@@ -136,6 +144,14 @@ public class Position implements Serializable {
 			position.setUserIdentifier(this.userIdentifier);
 			position.setVolume(this.volume);
 			return position;
+		}
+		
+		public Position deepCopyPosition(Position existingPosition) {
+			Position deepCopy = new Position();
+			deepCopy.setSymbol(existingPosition.getSymbol());
+			deepCopy.setUserIdentifier(existingPosition.getUserIdentifier());
+			deepCopy.setVolume(existingPosition.getVolume());
+			return deepCopy;
 		}
 		
 		
