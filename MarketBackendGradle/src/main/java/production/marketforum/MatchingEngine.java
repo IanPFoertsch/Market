@@ -41,7 +41,6 @@ public class MatchingEngine {
 
 	public MatchingEngine() {
 		// DataStructure initialization
-		System.out.println("Matching Engine" + this + " Created!");
 		this.asks = new HashMap<String, PriorityQueue<Post>>();
 		this.bids = new HashMap<String, PriorityQueue<Post>>();
 	}

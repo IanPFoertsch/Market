@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="test.TestSpreadReportGeneration" tests="2" skipped="0" failures="0" errors="0" timestamp="2015-09-22T15:50:59" hostname="WINDOWS-URHDCJE" time="0.005">
+<testsuite name="test.TestSpreadReportGeneration" tests="2" skipped="0" failures="0" errors="0" timestamp="2015-10-17T15:36:40" hostname="WINDOWS-URHDCJE" time="0.001">
   <properties/>
-  <testcase name="testMultipleSymbolReports" classname="test.TestSpreadReportGeneration" time="0.003"/>
-  <testcase name="testSpreadReportContainsDefaultSymbol" classname="test.TestSpreadReportGeneration" time="0.001"/>
-  <system-out><![CDATA[Matching Engineproduction.marketforum.MatchingEngine@4b680576 Created!
-Matching Engineproduction.marketforum.MatchingEngine@51eef328 Created!
+  <testcase name="testMultipleSymbolReports" classname="test.TestSpreadReportGeneration" time="0.001"/>
+  <testcase name="testSpreadReportContainsDefaultSymbol" classname="test.TestSpreadReportGeneration" time="0.0"/>
+  <system-out><![CDATA[Matching Engineproduction.marketforum.MatchingEngine@395574b2 Created!
+Matching Engineproduction.marketforum.MatchingEngine@23aeadbd Created!
 GOLD
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>

@@ -58,9 +58,7 @@ public class PostConsumer implements MessageListener {
 			Post post = this.postUnmarshaller.unmarshall(postString);
 			//send it to the matching engine
 			this.matchingEngine.postListing(post);
-			System.out.println(message.getBody(String.class));
-			
-			logger.info("Post received, unmarshalled and posted to the matchingEngine");
+
 		} catch (JMSException | JAXBException e) {
 			logger.debug(e.getMessage());
 		}

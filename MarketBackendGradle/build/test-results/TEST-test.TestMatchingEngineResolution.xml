@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="test.TestMatchingEngineResolution" tests="6" skipped="0" failures="0" errors="0" timestamp="2015-09-22T15:50:59" hostname="WINDOWS-URHDCJE" time="0.056">
+<testsuite name="test.TestMatchingEngineResolution" tests="6" skipped="0" failures="0" errors="0" timestamp="2015-10-17T15:36:40" hostname="WINDOWS-URHDCJE" time="0.02">
   <properties/>
-  <testcase name="testTwoElementSaleBetweenTwoParties" classname="test.TestMatchingEngineResolution" time="0.008"/>
+  <testcase name="testTwoElementSaleBetweenTwoParties" classname="test.TestMatchingEngineResolution" time="0.003"/>
   <testcase name="testSimpleOneCommodityExchange" classname="test.TestMatchingEngineResolution" time="0.001"/>
   <testcase name="testSpreadReportGeneration" classname="test.TestMatchingEngineResolution" time="0.0"/>
   <testcase name="testMatchingEngineResolution" classname="test.TestMatchingEngineResolution" time="0.0"/>
-  <testcase name="testpreferenceForLowestOffer" classname="test.TestMatchingEngineResolution" time="0.001"/>
+  <testcase name="testpreferenceForLowestOffer" classname="test.TestMatchingEngineResolution" time="0.0"/>
   <testcase name="testPreferenceForHighestRequest" classname="test.TestMatchingEngineResolution" time="0.0"/>
-  <system-out><![CDATA[Matching Engineproduction.marketforum.MatchingEngine@3468123 Created!
-Matching Engineproduction.marketforum.MatchingEngine@7fc7be23 Created!
-Matching Engineproduction.marketforum.MatchingEngine@3d98999d Created!
-Matching Engineproduction.marketforum.MatchingEngine@32017397 Created!
-Matching Engineproduction.marketforum.MatchingEngine@4995f054 Created!
-Matching Engineproduction.marketforum.MatchingEngine@be179e3 Created!
+  <system-out><![CDATA[Matching Engineproduction.marketforum.MatchingEngine@3a8957a9 Created!
+Matching Engineproduction.marketforum.MatchingEngine@33bbd987 Created!
+Matching Engineproduction.marketforum.MatchingEngine@3ceb3f05 Created!
+Matching Engineproduction.marketforum.MatchingEngine@73c3f6a Created!
+Matching Engineproduction.marketforum.MatchingEngine@5718489e Created!
+Matching Engineproduction.marketforum.MatchingEngine@3a82c41b Created!
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
