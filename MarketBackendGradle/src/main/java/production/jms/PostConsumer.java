@@ -60,7 +60,7 @@ public class PostConsumer implements MessageListener {
 	public PostConsumer() throws JAXBException {
 		this.postUnmarshaller = new PostUnmarshaller();
 		this.logger = Logger.getLogger(this.getClass());
-		this.logger.info("PostConsumerCreated!");
+		//this.logger.info("PostConsumerCreated!");
 		this.marshallingWrapper = new MarshallingWrapper<MarketResolutionReportWrapper>(MarketResolutionReportWrapper.class);
 	}
 	
@@ -73,13 +73,20 @@ public class PostConsumer implements MessageListener {
 			Post post = this.postUnmarshaller.unmarshall(postString);
 			
 			//send it to the matching engine and recover the consequent reports
+			System.out.println("POST CONSUMER posting " + message.getBody(String.class));
 			LinkedList<MarketResolutionReport> reports = this.matchingEngine.postListing(post);
-			MarketResolutionReportWrapper reportWrapper = this.loadReportsToWrapper(reports);
-			
-			//Marshal the report to xml and send it to the Resolution Report Queue
-			String xml = this.marshallingWrapper.marshall(reportWrapper);
-			this.context.createProducer().send(reportQueue, xml);
+			if(reports != null) {
+				if(reports.size() != 0) {
+					MarketResolutionReportWrapper reportWrapper = this.loadReportsToWrapper(reports);
+				
+					//Marshal the report to xml and send it to the Resolution Report Queue
+					String xml = this.marshallingWrapper.marshall(reportWrapper);
+					System.out.println(xml);
+					this.context.createProducer().send(reportQueue, xml);
+				}
+			}
 		} catch (JMSException | JAXBException e) {
+			System.out.println(e.getMessage());
 			logger.debug(e.getMessage());
 		}
 	}

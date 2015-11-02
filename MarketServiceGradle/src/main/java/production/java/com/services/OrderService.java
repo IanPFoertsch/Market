@@ -62,7 +62,7 @@ public class OrderService {
 	@Consumes(MediaType.APPLICATION_XML)
 	@Produces(MediaType.APPLICATION_XML)
 	@POST
-	public String submitPost(String xml)  {
+	public Response submitPost(String xml)  {
 	
 		try {
 			Post post = this.postUnmarshaller.unmarshall(xml);
@@ -72,9 +72,9 @@ public class OrderService {
 		}
 		catch(JAXBException e) {
 			//this.logger.error(e.getMessage());
-			return "Error in sending message via JMS, see application logs";
+			System.out.println("Error in sending message via JMS, see application logs");
 		}
-		return "Acknowledged";
+		return Response.ok().build();
 	}
 
 	@Path("")

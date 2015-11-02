@@ -27,7 +27,7 @@ public class clientDriver {
 		
 		Post post = new Post();
 		
-		post.setPostingType(PostingType.ASK);
+		post.setPostingType(PostingType.BID);
 		post.setPrice(25);
 		post.setSymbol("COPPER");
 		post.setDate(System.currentTimeMillis());
@@ -40,17 +40,17 @@ public class clientDriver {
 		WebTarget target = client.target(targetURL + resourceUrl);
 		
 		Response response = target.request().post(Entity.json(post));
-		//System.out.println(mapper.writeValueAsString(post));
+		System.out.println(response.getStatus());
 		response.close();
 		
 		
 		
-		String positionsUrl = "/position/user";
-		WebTarget accountTarget = client.target(targetURL + positionsUrl);
+		//String positionsUrl = "/position/user";
+		//WebTarget accountTarget = client.target(targetURL + positionsUrl);
 				
-		Response userResponse = accountTarget.queryParam("userIdentifier", "Ian").queryParam("password", "password").request().get();
+		//Response userResponse = accountTarget.queryParam("userIdentifier", "Ian").queryParam("password", "password").request().get();
 	
-		String accountsResponse = userResponse.readEntity(PositionCollection.class).toString();
+		//String accountsResponse = userResponse.readEntity(PositionCollection.class).toString();
 		//System.out.println(accountsResponse);
 		
 		

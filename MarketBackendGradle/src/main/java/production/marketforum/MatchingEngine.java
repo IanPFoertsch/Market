@@ -10,9 +10,7 @@ import java.util.Set;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Startup;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Singleton;
+
 
 import org.jboss.logging.Logger;
 import production.entity.*;
@@ -55,9 +53,9 @@ public class MatchingEngine {
 						return this.resolvePost(post);
 					//if no, create a listing for this post
 					else{
-						LinkedList<MarketResolutionReport> reports = new LinkedList<>();
-						reports.add(this.handleUnresolvedPost(post));
-						return reports;
+						//Handle the unsatisfied demand and return and empty list of reports
+						this.handleUnresolvedPost(post);
+						return new LinkedList<MarketResolutionReport>();
 					}	
 		}
 		else {
@@ -67,9 +65,9 @@ public class MatchingEngine {
 				return this.resolvePost(post);
 				//if no, create a listing for this post
 			else{
-				LinkedList<MarketResolutionReport> reports = new LinkedList<>();
-				reports.add(this.handleUnresolvedPost(post));
-				return reports;
+				//handle the unsatisfied demand in the post, and return an empty list
+				this.handleUnresolvedPost(post);
+				return new LinkedList<MarketResolutionReport>();
 			}
 		}
 	}
@@ -116,7 +114,10 @@ public class MatchingEngine {
 		}
 		// Does the post still contain unfilled volume?
 		if (post.getVolume() > 0) {
-			reports.add(this.handleUnresolvedPost(post));
+			//if so, handle the unresolved post. 
+			//REVISED BY IAN FOERTSCH 11/02/15
+			//Removed the addition of null resolution reports
+			this.handleUnresolvedPost(post);
 		}
 		// return the list of reports
 		return reports;
@@ -221,9 +222,9 @@ public class MatchingEngine {
 		return loadTwoPostsToReport(report, ask, bid);
 	}
 
-	private MarketResolutionReport handleUnresolvedPost(Post post) {
-		MarketResolutionReport report = new MarketResolutionReport();
-		report.setPostOutcome(PostOutcome.NOT_COMPLETED);
+	private void handleUnresolvedPost(Post post) {
+		
+		
 		// Is this an ask or a bid?
 		if (post.getPostingType() == PostingType.ASK) {
 			// Does a listing of this type currently exist in the asks field
@@ -253,13 +254,17 @@ public class MatchingEngine {
 				this.bids.put(post.getSymbol(), newListing);
 			}
 		}
-		return loadSinglePostToIncompleteReport(post);
+		
 	}
 	
 	
 
 
-		
+		/**
+		 *FOLLOWING CODE REMOVED TO PREVENT NULL REPORT BUG. IAN FOERTSCH 11/02/15 
+		 * @param post
+		 * @return
+		 *
 		private  MarketResolutionReport loadSinglePostToIncompleteReport(Post post){
 			MarketResolutionReport report = new MarketResolutionReport();
 			if(post.getPostingType() == PostingType.ASK)
@@ -277,6 +282,7 @@ public class MatchingEngine {
 				return report;
 			}
 		}
+		*/
 			
 		private MarketResolutionReport loadTwoPostsToReport(MarketResolutionReport report, Post ask, Post bid)
 			{

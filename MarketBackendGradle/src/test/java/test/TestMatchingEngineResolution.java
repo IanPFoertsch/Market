@@ -67,7 +67,7 @@ public class TestMatchingEngineResolution {
 	@Test
 	public void testMatchingEngineResolution() {
 		LinkedList<MarketResolutionReport> reports = this.matchingEngine.postListing(this.ask);
-		assertTrue(reports.size() == 1);
+		assertTrue(reports.size() == 0);
 	}
 	
 	@Test
