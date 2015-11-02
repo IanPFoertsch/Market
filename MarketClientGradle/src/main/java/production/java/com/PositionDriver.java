@@ -72,7 +72,7 @@ public static void main(String[] args) throws JAXBException, JsonProcessingExcep
 		//userProfile.setPassword("merp");
 		
 		
-		Response userResponse = target.queryParam("userIdentifier", "Phil").queryParam("password", "merp").request().get(); 	
+		Response userResponse = target.queryParam("userIdentifier", "Ian").queryParam("password", "merp").request().get(); 	
 		System.out.println(userResponse.getStatus());
 		System.out.println(userResponse.readEntity(PositionCollection.class).toString());
 	}

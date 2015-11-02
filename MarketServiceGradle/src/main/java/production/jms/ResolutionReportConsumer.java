@@ -12,6 +12,7 @@ import javax.xml.bind.JAXBException;
 
 import production.business.MarketResolutionReportService;
 import production.entity.MarketResolutionReport;
+import production.entity.MarketResolutionReportWrapper;
 import production.marshalling.MarshallingWrapper;
 
 /**
@@ -33,30 +34,32 @@ public class ResolutionReportConsumer implements MessageListener {
 	@Resource(mappedName = reportQueueName)
 	private Queue reportQueue;
 	
-	private MarshallingWrapper<MarketResolutionReport> marshallingWrapper;
+	private MarshallingWrapper<MarketResolutionReportWrapper> marshallingWrapper;
 	
 	@Inject
 	private MarketResolutionReportService marketResolutionReportService;
 	
 	public ResolutionReportConsumer() throws JAXBException{
-		this.marshallingWrapper = new MarshallingWrapper<MarketResolutionReport>(MarketResolutionReport.class);
+		this.marshallingWrapper = new MarshallingWrapper<MarketResolutionReportWrapper>(MarketResolutionReportWrapper.class);
 	}
 	
 	@Override
 	public void onMessage(Message message) {
-		
+		System.out.println("MessageReceived by the Resolution Report Listener!");
 		try {
 			//recover the xml from the message body and unmarshall it to a report using the marshallingWrapper
 			String xml = message.getBody(String.class);
 			//TODO: encase the cast in a try-catch block and add it to the exception handling logic.
-			MarketResolutionReport report = (MarketResolutionReport) this.marshallingWrapper.unmarshal(xml);
+			MarketResolutionReportWrapper reportWrapper = (MarketResolutionReportWrapper) this.marshallingWrapper.unmarshal(xml);
 			
-			//lastly, export the report to the injected service
-			this.marketResolutionReportService.applyResolutionReport(report);
+			//lastly, export the report Wrapper to the injected service
+			this.marketResolutionReportService.applyResolutionReportWrapper(reportWrapper);
+			
+			System.out.println("Message received by the ResolutionReportListener and sent to the resolutionReportService");
 			
 		} catch (JMSException | JAXBException e) {
-			// 
-			e.printStackTrace();
+			
+			System.out.println(e.getMessage());
 		}
 		
 		

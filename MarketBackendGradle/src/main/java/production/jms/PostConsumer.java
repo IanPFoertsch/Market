@@ -1,5 +1,8 @@
 package production.jms;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+
 import javax.annotation.Resource;
 import javax.ejb.MessageDriven;
 
@@ -15,8 +18,11 @@ import org.jboss.logging.Logger;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.EJB;
 
+import production.entity.MarketResolutionReport;
+import production.entity.MarketResolutionReportWrapper;
 import production.entity.Post;
 import production.marketforum.MatchingEngine;
+import production.marshalling.MarshallingWrapper;
 import production.marshalling.PostUnmarshaller;
 
 @MessageDriven(name = "PostQueueReceiver", activationConfig = {
@@ -29,17 +35,25 @@ public class PostConsumer implements MessageListener {
 	
 	private static final String postQueueName = "java:jboss/jms/queue/postQueue";
 	
+	private static final String reportQueueName = "java:jboss/jms/queue/marketResolutionReportQueue";
+	
 	@Inject private JMSContext context;
+	
+	
 	
 	@Resource(mappedName = postQueueName)
 	private Queue postQueue;
 	
+	@Resource(mappedName = reportQueueName)
+	private Queue reportQueue;
 	
 	private PostUnmarshaller postUnmarshaller;
+	private MarshallingWrapper<MarketResolutionReportWrapper> marshallingWrapper;
 	
 	@EJB
 	private MatchingEngine matchingEngine;
 
+	
 	
 	private Logger logger;
 	
@@ -47,6 +61,7 @@ public class PostConsumer implements MessageListener {
 		this.postUnmarshaller = new PostUnmarshaller();
 		this.logger = Logger.getLogger(this.getClass());
 		this.logger.info("PostConsumerCreated!");
+		this.marshallingWrapper = new MarshallingWrapper<MarketResolutionReportWrapper>(MarketResolutionReportWrapper.class);
 	}
 	
 	@Override
@@ -56,17 +71,25 @@ public class PostConsumer implements MessageListener {
 			//convert it back to a post object
 			String postString = message.getBody(String.class);
 			Post post = this.postUnmarshaller.unmarshall(postString);
-			//send it to the matching engine
-			this.matchingEngine.postListing(post);
-
+			
+			//send it to the matching engine and recover the consequent reports
+			LinkedList<MarketResolutionReport> reports = this.matchingEngine.postListing(post);
+			MarketResolutionReportWrapper reportWrapper = this.loadReportsToWrapper(reports);
+			
+			//Marshal the report to xml and send it to the Resolution Report Queue
+			String xml = this.marshallingWrapper.marshall(reportWrapper);
+			this.context.createProducer().send(reportQueue, xml);
 		} catch (JMSException | JAXBException e) {
 			logger.debug(e.getMessage());
 		}
-		
+	}
 	
-		
-		
-		
+	private MarketResolutionReportWrapper loadReportsToWrapper(LinkedList<MarketResolutionReport> list) {
+		MarketResolutionReportWrapper reportWrapper = new MarketResolutionReportWrapper();
+		ArrayList<MarketResolutionReport> arrayOfReports= new ArrayList<MarketResolutionReport>();
+		arrayOfReports.addAll(list);
+		reportWrapper.setReports(arrayOfReports);
+		return reportWrapper;
 	}
 	
 }

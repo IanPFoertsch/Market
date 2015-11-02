@@ -4,6 +4,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import production.entity.PositionCollection;
 import production.entity.Post;
 import production.entity.SpreadStatusReportWrapper;
 import production.entity.UserProfile;
@@ -27,43 +28,30 @@ public class clientDriver {
 		Post post = new Post();
 		
 		post.setPostingType(PostingType.ASK);
-		post.setPrice(1.0);
-		post.setSymbol("GOLD");
+		post.setPrice(25);
+		post.setSymbol("COPPER");
 		post.setDate(System.currentTimeMillis());
 		post.setUserIdentifier("Ian");
-		post.setVolume(1.0);
-		
-		ObjectMapper mapper = new ObjectMapper();
-		
-		
-		
-		String json = mapper.writeValueAsString(post);
-		
-		
-		
-		
+		post.setVolume(15);
 		
 		String targetURL = "http://localhost:8080/MarketServiceGradle";
-		String resourceUrl = "/offer";
+		String resourceUrl = "/order";
 		Client client = ClientBuilder.newClient();
 		WebTarget target = client.target(targetURL + resourceUrl);
 		
 		Response response = target.request().post(Entity.json(post));
-		System.out.println(mapper.writeValueAsString(post));
+		//System.out.println(mapper.writeValueAsString(post));
 		response.close();
 		
-		UserProfile userProfile = new UserProfile();
-		userProfile.setUserIdentifier("clerp");
-		userProfile.setPassword("merp");
 		
-		String accountUrl = "/account";
-		WebTarget otherTarget = client.target(targetURL + accountUrl);
-		Response otherResponse = otherTarget.request().post(Entity.json(userProfile));
-		//Response otherResponse = otherTarget.request().get();
 		
-		//String result = otherResponse.readEntity(String.class);
-		//System.out.println(otherResponse.getStatus());
-		//System.out.println(result);
+		String positionsUrl = "/position/user";
+		WebTarget accountTarget = client.target(targetURL + positionsUrl);
+				
+		Response userResponse = accountTarget.queryParam("userIdentifier", "Ian").queryParam("password", "password").request().get();
+	
+		String accountsResponse = userResponse.readEntity(PositionCollection.class).toString();
+		//System.out.println(accountsResponse);
 		
 		
 		

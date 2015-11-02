@@ -1,7 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="production.java.com.services.MarketResolutionReportServiceTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2015-10-13T15:12:03" hostname="WINDOWS-URHDCJE" time="0.001">
+<testsuite name="production.java.com.services.MarketResolutionReportServiceTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2015-10-17T18:29:00" hostname="WINDOWS-URHDCJE" time="0.016">
   <properties/>
-  <testcase name="test" classname="production.java.com.services.MarketResolutionReportServiceTest" time="0.001"/>
-  <system-out><![CDATA[]]></system-out>
+  <testcase name="testMarketResolutionReportDaoLink" classname="production.java.com.services.MarketResolutionReportServiceTest" time="0.012"/>
+  <testcase name="testPositionDaoLink" classname="production.java.com.services.MarketResolutionReportServiceTest" time="0.002"/>
+  <testcase name="testPositionGenerationFromReport" classname="production.java.com.services.MarketResolutionReportServiceTest" time="0.0"/>
+  <system-out><![CDATA[Market Resolution Report:
+Type: null
+Symbol: GOLD
+Price: 5.0
+Volume: 10.0
+Buyer Id: buyer
+Seller Id: seller
+Market Resolution Report:
+Type: null
+Symbol: GOLD
+Price: 5.0
+Volume: 10.0
+Buyer Id: buyer
+Seller Id: seller
+Market Resolution Report:
+Type: null
+Symbol: GOLD
+Price: 5.0
+Volume: 10.0
+Buyer Id: buyer
+Seller Id: seller
+]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

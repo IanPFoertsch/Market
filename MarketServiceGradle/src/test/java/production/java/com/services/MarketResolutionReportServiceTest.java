@@ -2,7 +2,7 @@ package production.java.com.services;
 
 import static org.junit.Assert.*;
 
-
+import java.util.ArrayList;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -20,6 +20,7 @@ import production.business.MarketResolutionReportService;
 import production.dao.MarketResolutionReportDao;
 import production.dao.PositionDao;
 import production.entity.MarketResolutionReport;
+import production.entity.MarketResolutionReportWrapper;
 import production.entity.Position;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -31,7 +32,8 @@ public class MarketResolutionReportServiceTest {
 	private String cashSymbol = "CASH";
 	private double volume = 10d;
 	private double price = 5d;
-	private MarketResolutionReport report; 
+	private MarketResolutionReport report;
+	private MarketResolutionReportWrapper reportWrapper; 
 	private Position sellerPosition;
 	private Position buyerPosition;
 	private Position sellerCash;
@@ -65,7 +67,12 @@ public class MarketResolutionReportServiceTest {
 		report.setVolume(volume);
 		report.setPrice(price);
 		report.setSymbol(symbol);
-		double cash = this.report.getPrice() * this.report.getVolume();
+		double cash = report.getPrice() * report.getVolume();
+		
+		ArrayList<MarketResolutionReport> reportsArray = new ArrayList<>();
+		reportsArray.add(report);
+		this.reportWrapper = new MarketResolutionReportWrapper();
+		this.reportWrapper.setReports(reportsArray);
 		
 		
 		this.sellerPosition = new Position.Builder().
@@ -88,20 +95,20 @@ public class MarketResolutionReportServiceTest {
 	 */
 	@Test
 	public void testPositionDaoLink() {
-		this.service.applyResolutionReport(report);
+		this.service.applyResolutionReportWrapper(this.reportWrapper);
 		Mockito.verify(positionDao, Mockito.atLeastOnce()).
 			applyMarketResolutionReport(Mockito.any(Position.class), Mockito.any(Position.class), Mockito.any(Position.class), Mockito.any(Position.class));
 	}
 	
 	@Test
 	public void testMarketResolutionReportDaoLink()	{
-		this.service.applyResolutionReport(report);
-		Mockito.verify(this.marketResolutionReportDao, Mockito.atLeastOnce()).persist(report);
+		this.service.applyResolutionReportWrapper(this.reportWrapper);
+		Mockito.verify(this.marketResolutionReportDao, Mockito.atLeastOnce()).persist(this.report);
 	}
 	
 	@Test
 	public void testPositionGenerationFromReport() {
-		this.service.applyResolutionReport(report);
+		this.service.applyResolutionReportWrapper(this.reportWrapper);
 		Mockito.verify(this.positionDao, Mockito.atLeastOnce()).
 			applyMarketResolutionReport(this.sellerCash, this.buyerCash, this.sellerPosition, this.buyerPosition);
 	}

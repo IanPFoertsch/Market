@@ -58,11 +58,9 @@ public class MatchingEngine {
 						LinkedList<MarketResolutionReport> reports = new LinkedList<>();
 						reports.add(this.handleUnresolvedPost(post));
 						return reports;
-					}
-					
+					}	
 		}
 		else {
-		
 			//does the market contain a complementary listing for thissymbol?
 			//if yes, attempt to resolve to post
 			if(this.asks.containsKey(post.getSymbol()))
@@ -74,12 +72,7 @@ public class MatchingEngine {
 				return reports;
 			}
 		}
-		
-		
 	}
-	
-	
-
 	/**
 	 * Resolve post is the market resolution algorithm. The method determines
 	 * the posting type of the post object, looks up the complimentary listing

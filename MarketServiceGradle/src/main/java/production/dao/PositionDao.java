@@ -74,7 +74,8 @@ public class PositionDao extends AbstractDao<Position>{
 			double totalVolume = position.getVolume() + existingPosition.getVolume();
 			
 			Position managedPosition = this.entityManager.merge(position);
-			managedPosition.setVolume(totalVolume);	
+			managedPosition.setVolume(totalVolume);
+			System.out.println("PersistPositionExecuted");
 		}
 		//if such a table entry does not exist, use a simple persist operation.
 		catch(NoResultException e)
@@ -93,7 +94,7 @@ public class PositionDao extends AbstractDao<Position>{
 		
 		//THIS IS A JPQL QUERY
 		String userPositionsQueryString = "SELECT p FROM Position p WHERE p.userIdentifier = '" + userProfile.getUserIdentifier() + "'";
-		System.out.println(userPasswordMatchQueryString);
+		
 		
 		int userPasswordMatch = (int) this.entityManager.createNativeQuery(userPasswordMatchQueryString).getSingleResult();
 		if(userPasswordMatch == 1) {

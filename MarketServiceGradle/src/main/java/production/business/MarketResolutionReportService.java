@@ -1,11 +1,14 @@
 package production.business;
 
+import java.util.ArrayList;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import production.dao.MarketResolutionReportDao;
 import production.dao.PositionDao;
 import production.entity.MarketResolutionReport;
+import production.entity.MarketResolutionReportWrapper;
 import production.entity.Position;
 
 /**
@@ -35,7 +38,7 @@ public class MarketResolutionReportService {
 	 * with the positions data access object to persist the changes to the database.
 	 * @param report
 	 */
-	public void applyResolutionReport(MarketResolutionReport report) {
+	private void applyResolutionReport(MarketResolutionReport report) {
 
 		//recover the parameters from the report and calculate the sale magnitude in cash.
 		String symbol = report.getSymbol();
@@ -45,6 +48,7 @@ public class MarketResolutionReportService {
 		double price = report.getPrice();
 		double cash = price*volume;
 		
+		System.out.println("ApplyResolutionReportHasBeenCalled");
 		//build a series of Positions objects detailing the cash and positions to be subtracted and 
 		//added to the buyer/seller.
 		
@@ -61,5 +65,13 @@ public class MarketResolutionReportService {
 		this.positionDao.applyMarketResolutionReport(sellerCash, buyerCash, sellerPosition, buyerPosition);
 		//THIS IS A POINT OF FAILURE HERE: DO WE NEED TO MAKE THIS SECTION TRANSACTIONAL?
 		this.marketResolutionReportDao.persist(report);
+	}
+	
+	public void applyResolutionReportWrapper(MarketResolutionReportWrapper wrapper) {
+		//recover the arraylist of reports, then iterate through the individual reports
+		ArrayList<MarketResolutionReport> reports = wrapper.getReports();
+		for(MarketResolutionReport report: reports) {
+			this.applyResolutionReport(report);
+		}
 	}
 }

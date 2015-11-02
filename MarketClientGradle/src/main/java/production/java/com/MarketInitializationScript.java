@@ -2,18 +2,20 @@ package production.java.com;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import production.entity.PositionCollection;
+import production.entity.Post;
 import production.enums.PostingType;
 
 public class MarketInitializationScript {
 	public static void main(String[] args) {
 		String targetURL = "http://localhost:8080/MarketServiceGradle";
-		String resourceUrl = "/position/user";
+		String resourceUrl = "/order";
 
 		ObjectMapper mapper = new ObjectMapper();
 		Client client = ClientBuilder.newClient();
@@ -32,25 +34,37 @@ public class MarketInitializationScript {
 		double askVolume = 10d;
 		double bidVolume = 10d;
 		
-		PostingType[] types = {PostingType.ASK, PostingType.BID};
-		long date = System.currentTimeMillis();
-		
-		
-		for(String name: userIdentifiers) {
+		Post post = new Post();
+		for(String name: bidders) {
 			for(String symbol: symbols) {
-				for
+				post.setDate(System.currentTimeMillis());
+				post.setPostingType(PostingType.BID);
+				post.setPrice(bidPrice);
+				post.setVolume(bidVolume);
+				post.setUserIdentifier(name);
+				post.setSymbol(symbol);
 				
+				Response response = target.request().post(Entity.json(post));
+				System.out.println(response.getStatus());
+				response.close();
 			}
 		}
 		
-		//UserProfile userProfile = new UserProfile();
-		//userProfile.setUserIdentifier("Ian");
-		//userProfile.setPassword("merp");
+		for(String name: askers) {
+			for(String symbol: symbols) {
+				post.setDate(System.currentTimeMillis());
+				post.setPostingType(PostingType.ASK);
+				post.setPrice(askPrice);
+				post.setVolume(askVolume);
+				post.setUserIdentifier(name);
+				post.setSymbol(symbol);
+				
+				Response response = target.request().post(Entity.json(post));
+				System.out.println(response.getStatus());
+				response.close();
+			}
+		}
 		
-		
-		Response userResponse = target.queryParam("userIdentifier", "Phil").queryParam("password", "merp").request().get(); 	
-		System.out.println(userResponse.getStatus());
-		System.out.println(userResponse.readEntity(PositionCollection.class).toString());
 	}
 
 }
