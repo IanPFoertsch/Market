@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="production.java.com.services.MarketResolutionReportServiceTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2015-11-02T17:04:53" hostname="WINDOWS-URHDCJE" time="0.016">
+<testsuite name="production.java.com.services.MarketResolutionReportServiceTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2015-11-07T23:24:29" hostname="WINDOWS-URHDCJE" time="0.016">
   <properties/>
   <testcase name="testMarketResolutionReportDaoLink" classname="production.java.com.services.MarketResolutionReportServiceTest" time="0.012"/>
-  <testcase name="testPositionDaoLink" classname="production.java.com.services.MarketResolutionReportServiceTest" time="0.001"/>
-  <testcase name="testPositionGenerationFromReport" classname="production.java.com.services.MarketResolutionReportServiceTest" time="0.001"/>
+  <testcase name="testPositionDaoLink" classname="production.java.com.services.MarketResolutionReportServiceTest" time="0.002"/>
+  <testcase name="testPositionGenerationFromReport" classname="production.java.com.services.MarketResolutionReportServiceTest" time="0.0"/>
   <system-out><![CDATA[ApplyResolutionReportHasBeenCalled
 ApplyResolutionReportHasBeenCalled
 ApplyResolutionReportHasBeenCalled

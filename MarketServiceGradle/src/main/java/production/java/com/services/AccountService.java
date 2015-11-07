@@ -24,6 +24,7 @@ public class AccountService {
 	@Inject
 	private UserProfileDao userProfileDao;
 	
+	private static final int NO_SUCH_PROFILE = 401;
 	
 	@Path("")
 	@POST
@@ -36,5 +37,14 @@ public class AccountService {
 	@GET
 	public List<UserProfile> getAllUserProfiles() {
 		return this.userProfileDao.findAll();
+	}
+	
+	@Path("login")
+	@POST
+	public Response login(UserProfile userProfile) {
+		if(this.userProfileDao.login(userProfile)) 
+			return Response.ok().build();
+		else
+			return Response.status(NO_SUCH_PROFILE).build();
 	}
 }
